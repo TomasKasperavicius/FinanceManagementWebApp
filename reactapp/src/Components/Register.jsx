@@ -43,7 +43,7 @@ const Register = () => {
         if (response.ok) {
             const data = await response.json();
             setUser({ ...user, ...data, LoggedIn: true })
-            navigate("/");
+            navigate("/account");
         }
     };
     const handleSubmit = async (event) => {

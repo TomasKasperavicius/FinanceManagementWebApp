@@ -1,9 +1,5 @@
 ﻿using Going.Plaid;
-using Going.Plaid.User;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Text.Json.Serialization;
-using webapi.Models;
 
 namespace webapi.Controllers
 {
@@ -95,6 +91,8 @@ namespace webapi.Controllers
                 var response = await _plaidClient.TransactionsGetAsync(new()
                 {
                     AccessToken = request.AccessToken,
+                    StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-24)),
+                    EndDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 });
                 return Ok(response.Transactions);
             }

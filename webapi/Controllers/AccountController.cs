@@ -1,7 +1,6 @@
 ﻿using Going.Plaid;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Win32;
 using webapi.Models;
 
 namespace webapi.Controllers

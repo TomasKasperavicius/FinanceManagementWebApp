@@ -15,12 +15,13 @@ import { formatAmount } from '../../utils/formatters';
 export default function Transaction({ transactions }) {
     const [visibleTransactions, setVisibleTransactions] = React.useState([])
     const { activeAccount } = React.useContext(CurrentActiveAccountContext);
+
     useEffect(() => {
-        var filteredTransactions = transactions.filter(transaction => transaction.account_id === activeAccount.account_id);
+        var filteredTransactions = transactions.filter(transaction => transaction.account_id === activeAccount.account.account_id);
         var sortedTransactions = filteredTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         setVisibleTransactions([...sortedTransactions])
-        console.log(visibleTransactions)
     }, [transactions, activeAccount])
+
     return (
         <React.Fragment>
             <Title>Recent transactions</Title>

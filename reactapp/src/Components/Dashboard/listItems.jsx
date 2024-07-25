@@ -3,11 +3,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
-import PaymentIcon from '@mui/icons-material/Payment';
-import HistoryIcon from '@mui/icons-material/History';
-import AddCardIcon from '@mui/icons-material/AddCard';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 
 
 export const secondaryListItems = (

@@ -21,7 +21,6 @@ export default function Chart({ transactions }) {
 
     const total = useMemo(() => {
         if (!transactions) return 0;
-        // Perform filtering logic here
         var sum = 0
         transactions.filter(transaction => {
             let amount = transaction.amount

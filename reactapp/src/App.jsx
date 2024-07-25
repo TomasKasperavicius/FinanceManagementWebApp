@@ -12,11 +12,55 @@ const App = () => {
     const [user, setUser] = useState({});
     const [activeAccount, setActiveAccount] = useState({});
     const [allAccounts, setAllAccounts] = useState([]);
-
+    const [openPlaidLink, setOpenPlaiLink] = useState(false);
+    useEffect(() => {
+        if (!user.userID) return
+        const fetchLinkToken = async () => {
+            const response = await fetch('https://localhost:7221/user/create_link_token/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user.userID.toString()),
+            });
+            if (response.ok) {
+                const { link_token } = await response.json();
+                console.log(linkToken)
+                setLinkToken(link_token);
+            }
+        };
+        const fetchAccounts = async () => {
+            const response = await fetch('https://localhost:7221/account/getAccounts/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user.userID),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.length == 0) {
+                    setOpenPlaiLink(true)
+                }
+                else {
+                    setAllAccounts([...data])
+                    setActiveAccount({ ...data[0] })
+                }
+            }
+        };
+        try {
+            fetchLinkToken();
+            fetchAccounts();
+        } catch (err) {
+            console.log(err)
+        }
+    }, [user]);
+    
 
     const { open, ready } = usePlaidLink({
         token: linkToken,
         onSuccess: async (publicToken, metadata) => {
+            console.log(publicToken)
             // Get access token
             var response = await fetch('https://localhost:7221/user/get_access_token/', {
                 method: 'POST',
@@ -59,59 +103,12 @@ const App = () => {
             }
         },
     });
-
-    useEffect(() => {
-        if (!user.userID) return
-        const fetchAccounts = async () => {
-            const response = await fetch('https://localhost:7221/account/getAccounts/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(user.userID),
-            });
-            if (response.ok) {
-                const data = await response.json();
-                if (data.length == 0) open();
-                else {
-                    setAllAccounts([...data])
-                    setActiveAccount({ ...data[0] })
-                }
-            }
-        };
-        try {
-            fetchAccounts();
-        } catch (err) {
-            console.log(err)
-        }
-    }, [linkToken, open])
-
-    useEffect(() => {
-        if (!user.userID) return
-        const fetchLinkToken = async () => {
-            const response = await fetch('https://localhost:7221/user/create_link_token/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(user.userID.toString()),
-            });
-            if (response.ok) {
-                const { link_token } = await response.json();
-                setLinkToken(link_token);
-            }
-            console.log(response)
-        };
-       
-        try {
-            fetchLinkToken();
-        } catch (err) {
-            console.log(err)
-        }
-    }, [user]);
-
-
     
+    useEffect(() => {
+        if (openPlaidLink && linkToken && ready) {
+            open()
+        }
+    }, [openPlaidLink, linkToken, ready])
     return (
         <UserContext.Provider value={{ user, setUser }}>
             <CurrentActiveAccountContext.Provider value={{ activeAccount, setActiveAccount }}>

@@ -57,9 +57,8 @@ const BankCard = ({ account, showBalance = true }) => {
                         style={{ width: '316px', height: '190px' }}
                     />
                 </ImageListItem>
-            </Link>
-
-             {showBalance && <ClipboardCopy title={account?.sharaebleId} />} 
+            </Link> 
+             {showBalance && <ClipboardCopy title={account?.account_id} />} 
         </div>
     );
 };
