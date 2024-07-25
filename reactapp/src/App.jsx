@@ -25,7 +25,6 @@ const App = () => {
             });
             if (response.ok) {
                 const { link_token } = await response.json();
-                console.log(linkToken)
                 setLinkToken(link_token);
             }
         };
@@ -60,7 +59,6 @@ const App = () => {
     const { open, ready } = usePlaidLink({
         token: linkToken,
         onSuccess: async (publicToken, metadata) => {
-            console.log(publicToken)
             // Get access token
             var response = await fetch('https://localhost:7221/user/get_access_token/', {
                 method: 'POST',
@@ -80,12 +78,12 @@ const App = () => {
             });
             if (response.ok) {
                 var data = await response.json();
-                setActiveAccount({ ...data[0], accessToken: access_token });
+                setActiveAccount({ ...data[0], accessToken: access_token, institutionID: metadata.institution.institution_id });
                 setAllAccounts({ ...data })
             }
             // Create account info to be saved to DB
             var accounts = data.map(() => {
-                return { UserID: user.userID, AccessToken: access_token }
+                return { UserID: user.userID, AccessToken: access_token, InstitutionID: metadata.institution.institution_id}
             }
             )
             // Add created account info

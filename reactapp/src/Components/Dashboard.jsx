@@ -103,6 +103,7 @@ export default function Dashboard({ allAccounts, openPlaid, ready }) {
     const handleChangeMultiple = (event) => {
         setActiveAccount({ ...event.target.value });
     };
+    
     const [transactions, setTransactions] = useState([]);
     useEffect(() => {
         const getTransactions = async () => {

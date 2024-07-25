@@ -1,13 +1,5 @@
 using Going.Plaid;
-using Google.Protobuf.WellKnownTypes;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI;
-using System;
-using System.Reflection.Metadata.Ecma335;
 using webapi;
 
 

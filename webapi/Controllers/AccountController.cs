@@ -44,21 +44,23 @@ namespace webapi.Controllers
             {
                 var uniqueAccessTokens = await _context.Accounts
               .Where(a => a.UserID == UserID)
-              .Select(a => a.AccessToken)
+              .Select(a => new { a.AccessToken, a.InstitutionID })
               .Distinct()
               .ToListAsync();
                 var allAccounts = new List<dynamic>();
 
-                foreach (var accessToken in uniqueAccessTokens)
+                foreach (var item in uniqueAccessTokens)
                 {
                     var response = await _plaidClient.AccountsGetAsync(new()
                     {
-                        AccessToken = accessToken
+                        AccessToken = item.AccessToken,
+
                     });
                     allAccounts.AddRange(response.Accounts.Select(account => new
                     {
                         Account = account,
-                        AccessToken = accessToken
+                        AccessToken = item.AccessToken,
+                        InstitutionID = item.InstitutionID
                     }));
                 }
                 return Ok(allAccounts);
@@ -68,5 +70,31 @@ namespace webapi.Controllers
                 return StatusCode(500, new { Error = ex.Message });
             }
         }
+        [HttpPost("get_institution_by_id")]
+        public async Task<IActionResult> GetInstitutionByID([FromBody] InstitutionRequest institutionRequest)
+        {
+            var request = new Going.Plaid.Institutions.InstitutionsGetByIdRequest
+            {
+                InstitutionId = institutionRequest.InstitutionID,
+                CountryCodes = new[] { Going.Plaid.Entity.CountryCode.Us },
+                //AccessToken = institutionRequest.AccessToken,
+            };
+
+            var response = await _plaidClient.InstitutionsGetByIdAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok(new { link_token = response.Institution });
+            }
+            else
+            {
+                Console.WriteLine(response.Error);
+                return StatusCode((int)response.StatusCode, response.Error);
+            }
+        }
     }
+    public class InstitutionRequest { 
+        public string AccessToken { get; set; }
+        public string InstitutionID { get; set; }
+    }
+
 }

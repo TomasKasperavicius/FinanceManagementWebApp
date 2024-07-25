@@ -17,6 +17,7 @@ export default function Transaction({ transactions }) {
     const { activeAccount } = React.useContext(CurrentActiveAccountContext);
 
     useEffect(() => {
+        if(!activeAccount.account) return
         var filteredTransactions = transactions.filter(transaction => transaction.account_id === activeAccount.account.account_id);
         var sortedTransactions = filteredTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         setVisibleTransactions([...sortedTransactions])

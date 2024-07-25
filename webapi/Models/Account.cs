@@ -4,6 +4,7 @@
     {
         public int AccountID { get; set; }
         public int UserID { get; set; }
+        public string InstitutionID { get; set; }
         public string AccessToken { get; set; }
 
     }
