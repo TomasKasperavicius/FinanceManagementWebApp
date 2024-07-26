@@ -6,6 +6,7 @@ import { CurrentActiveAccountContext } from "../../Context/UserContext"
 import CountUp from "react-countup"
 import { formatAmount } from '../../utils/formatters';
 import CircularProgress from '@mui/material/CircularProgress';
+import BankCard from '../BankCard';
 
 export default function Deposits() {
     const { activeAccount } = React.useContext(CurrentActiveAccountContext);
@@ -29,6 +30,7 @@ export default function Deposits() {
             <Typography color="text.secondary" sx={{ flex: 1 }}>
                 {new Date().toDateString("yyyy-MM-dd")}
             </Typography>
+            <BankCard account={activeAccount} />
             <div>
                 <Link color="primary" href="#">
                     View account details
