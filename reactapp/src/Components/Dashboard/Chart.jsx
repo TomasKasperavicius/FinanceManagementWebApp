@@ -4,6 +4,7 @@ import Title from './Title';
 import { useEffect, useState, useMemo } from 'react';
 import { formatAmount } from '../../utils/formatters';
 import { CurrentActiveAccountContext } from "../../Context/UserContext"
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 const data = [
@@ -18,7 +19,7 @@ const data = [
 export default function Chart({ transactions }) {
     const [totalExpenditure, setTotalExpenditure] = useState(0);
     const { activeAccount } = React.useContext(CurrentActiveAccountContext);
-
+    
     const total = useMemo(() => {
         if (!transactions) return 0;
         var sum = 0
@@ -34,6 +35,13 @@ export default function Chart({ transactions }) {
     useEffect(() => {
         setTotalExpenditure(total);
     }, [total]);
+    if (!activeAccount.account) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: "100%" }}>
+                <CircularProgress />
+            </div>
+        );
+    }
   return (
     <React.Fragment>
           <Title>Total expenditure: {formatAmount(totalExpenditure, activeAccount && activeAccount.balances ? activeAccount.balances.iso_currency_code : "USD")}</Title>

@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Components/Login"
 import Register from "./Components/Register"
 import Home from './Components/Home';
-import Dashboard from './Components/Dashboard';
+import AccountInfo from './Components/AccountInfo';
 import { UserContext, CurrentActiveAccountContext } from './Context/UserContext';
 import { usePlaidLink } from 'react-plaid-link';
+import BankAccounts from './Components/BankAccounts';
+import SideBar from './Components/SideBar';
 
 const App = () => {
     const [linkToken, setLinkToken] = useState(null);
@@ -54,7 +56,7 @@ const App = () => {
             console.log(err)
         }
     }, [user]);
-    
+
 
     const { open, ready } = usePlaidLink({
         token: linkToken,
@@ -83,7 +85,7 @@ const App = () => {
             }
             // Create account info to be saved to DB
             var accounts = data.map(() => {
-                return { UserID: user.userID, AccessToken: access_token, InstitutionID: metadata.institution.institution_id}
+                return { UserID: user.userID, AccessToken: access_token, InstitutionID: metadata.institution.institution_id }
             }
             )
             // Add created account info
@@ -101,7 +103,6 @@ const App = () => {
             }
         },
     });
-    
     useEffect(() => {
         if (openPlaidLink && linkToken && ready) {
             open()
@@ -127,16 +128,23 @@ const App = () => {
                                 path="register"
                                 element={<Register />}
                             />
+
                             <Route
-                                path="account"
-                                element={<Dashboard allAccounts={allAccounts} openPlaid={open} ready={ready} />}
-                            />
+                                path="dashboard"
+                                element={<SideBar openPlaid={open} ready={ready} />}
+                            >
+                                <Route path="accounts" element={<BankAccounts allAccounts={allAccounts} />} />
+                                <Route path="account" element={<AccountInfo />} />
+
+                            </Route>
                             <Route path="*" element={<div>Not Found</div>} />
                         </Route>
                     </Routes>
+
                 </Router>
             </CurrentActiveAccountContext.Provider>
         </ UserContext.Provider>
+
     );
 }
 export default App;

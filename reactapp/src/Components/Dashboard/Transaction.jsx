@@ -10,6 +10,7 @@ import RoundLogo from "../RoundLogo";
 import { useEffect } from 'react';
 import { CurrentActiveAccountContext } from "../../Context/UserContext"
 import { formatAmount } from '../../utils/formatters';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 export default function Transaction({ transactions }) {
@@ -22,7 +23,13 @@ export default function Transaction({ transactions }) {
         var sortedTransactions = filteredTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         setVisibleTransactions([...sortedTransactions])
     }, [transactions, activeAccount])
-
+    if (!activeAccount.account) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: "100%" }}>
+                <CircularProgress />
+            </div>
+        );
+    }
     return (
         <React.Fragment>
             <Title>Recent transactions</Title>

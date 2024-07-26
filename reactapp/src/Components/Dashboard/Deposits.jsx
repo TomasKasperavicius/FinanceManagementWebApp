@@ -12,7 +12,7 @@ export default function Deposits() {
     const { activeAccount } = React.useContext(CurrentActiveAccountContext);
     if (!activeAccount.account) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height:"100%"}}>
                 <CircularProgress /> 
             </div>
         );
@@ -30,7 +30,7 @@ export default function Deposits() {
             <Typography color="text.secondary" sx={{ flex: 1 }}>
                 {new Date().toDateString("yyyy-MM-dd")}
             </Typography>
-            <BankCard account={activeAccount} />
+            <BankCard account={activeAccount} showBalance={false} />
             <div>
                 <Link color="primary" href="#">
                     View account details

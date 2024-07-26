@@ -43,17 +43,12 @@ const Login = () => {
 
             const data = await response.json();
             setUser({ ...user, ...data, LoggedIn: true })
-            navigate("/account");
+            navigate("/dashboard/account");
         }
     };
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-
         await login(data.get('email'), data.get('password'));
     };
     return (
