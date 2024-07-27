@@ -77,17 +77,15 @@ namespace webapi.Controllers
             {
                 InstitutionId = institutionRequest.InstitutionID,
                 CountryCodes = new[] { Going.Plaid.Entity.CountryCode.Us },
-                //AccessToken = institutionRequest.AccessToken,
             };
 
             var response = await _plaidClient.InstitutionsGetByIdAsync(request);
             if (response.IsSuccessStatusCode)
             {
-                return Ok(new { link_token = response.Institution });
+                return Ok(new { institution = response.Institution });
             }
             else
             {
-                Console.WriteLine(response.Error);
                 return StatusCode((int)response.StatusCode, response.Error);
             }
         }

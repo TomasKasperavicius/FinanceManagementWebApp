@@ -9,13 +9,11 @@ namespace webapi.Controllers
     {
         private readonly FinanceDbContext _context;
         private readonly PlaidClient _plaidClient;
-        private readonly ILogger<UserController> _logger;
 
         public UserController(FinanceDbContext financeDbContext, PlaidClient plaidClient, ILogger<UserController> logger)
         {
             _context = financeDbContext;
             _plaidClient = plaidClient;
-            _logger = logger;
 
         }
 
@@ -24,12 +22,10 @@ namespace webapi.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received request with userID: {request.PublicToken}", request.PublicToken);
                 var response = await _plaidClient.ItemPublicTokenExchangeAsync(new()
                 {
                     PublicToken = request.PublicToken
                 });
-                _logger.LogInformation($"TEST: {response.AccessToken}", response.AccessToken);
 
                 return Ok(new { access_token = response.AccessToken, item_id = response.ItemId });
             }
@@ -42,7 +38,6 @@ namespace webapi.Controllers
         [HttpPost("create_link_token")]
         public async Task<IActionResult> CreateLinkToken([FromBody] string userID)
         {
-            _logger.LogInformation($"Received request with userID: {userID}", userID);
             var request = new Going.Plaid.Link.LinkTokenCreateRequest
             {
                 ClientName = "FinPlan",
@@ -62,7 +57,6 @@ namespace webapi.Controllers
             }
             else
             {
-                Console.WriteLine(response.Error);
                 return StatusCode((int)response.StatusCode, response.Error);
             }
         }

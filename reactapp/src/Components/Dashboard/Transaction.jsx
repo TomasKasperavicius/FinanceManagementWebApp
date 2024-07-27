@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Link from '@mui/material/Link';
+import Chip from '@mui/material/Chip';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,13 +12,17 @@ import { CurrentActiveAccountContext } from "../../Context/UserContext"
 import { formatAmount } from '../../utils/formatters';
 import CircularProgress from '@mui/material/CircularProgress';
 
-
-export default function Transaction({ transactions }) {
+const payment_channels = {
+    0: "Online",
+    1: "In store",
+    2: "Other"
+}
+export default function Transaction({ transactions, showAllFields = false }) {
     const [visibleTransactions, setVisibleTransactions] = React.useState([])
     const { activeAccount } = React.useContext(CurrentActiveAccountContext);
 
     useEffect(() => {
-        if(!activeAccount.account) return
+        if (!activeAccount.account) return
         var filteredTransactions = transactions.filter(transaction => transaction.account_id === activeAccount.account.account_id);
         var sortedTransactions = filteredTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         setVisibleTransactions([...sortedTransactions])
@@ -30,34 +34,38 @@ export default function Transaction({ transactions }) {
             </div>
         );
     }
+    const TableCellsAll = () => {
+        return (<><TableCell>Name</TableCell><TableCell>Date</TableCell><TableCell>Sender</TableCell><TableCell>Receiver</TableCell><TableCell>Status</TableCell><TableCell>Amount</TableCell><TableCell>Channel</TableCell><TableCell>Details</TableCell></>)
+    }
+    const TableCellsDataAll = ({ transaction }) => {
+        return (<><TableCell>{transaction.name}</TableCell><TableCell>{transaction.date}</TableCell><TableCell>{transaction.account_id}</TableCell><TableCell>{transaction.merchant_name ? (<div style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>{transaction.merchant_name}<RoundLogo src={transaction.logo_url} /></div>) : transaction.name}</TableCell><TableCell>{transaction.pending ? <Chip label="Pending" color="yellow" variant="outlined" /> : <Chip label="Success" color="success" variant="outlined" />}</TableCell><TableCell>{formatAmount(transaction.amount, transaction.iso_currency_code)}</TableCell><TableCell>{payment_channels[transaction.payment_channel]}</TableCell><TableCell>{transaction.category[0]}</TableCell></>)
+    }
+
+    const TableCells = () => {
+        return (
+            <><TableCell>Name</TableCell><TableCell>Date</TableCell><TableCell>Status</TableCell><TableCell>Amount</TableCell></>
+        )
+    }
+    const TableCellsData = ({ transaction }) => {
+        return (<><TableCell>{transaction.name}</TableCell><TableCell>{transaction.date}</TableCell><TableCell>{transaction.pending ? <Chip label="Pending" color="yellow" variant="outlined" /> : <Chip label="Success" color="success" variant="outlined" />}</TableCell><TableCell>{formatAmount(transaction.amount, transaction.iso_currency_code)}</TableCell></>)
+    }
     return (
         <React.Fragment>
             <Title>Recent transactions</Title>
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Sender</TableCell>
-                        <TableCell>Receiver</TableCell>
-                        <TableCell>Amount</TableCell>
-                        <TableCell>Details</TableCell>
+                        {showAllFields ? <TableCellsAll /> : <TableCells />}
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {visibleTransactions.map((transaction, id) => (
                         <TableRow key={id}>
-                            <TableCell>{transaction.date}</TableCell>
-                            <TableCell>{transaction.account_id}</TableCell>
-                            <TableCell>{transaction.merchant_name ? (<div style={{ display: "flex", justifyContent: "left", alignItems:"center"}}>{transaction.merchant_name}<RoundLogo src={transaction.logo_url} /></div>) : transaction.name}</TableCell>
-                            <TableCell>{formatAmount(transaction.amount, transaction.iso_currency_code)}</TableCell>
-                            <TableCell>{ transaction.category[0]}</TableCell>
+                            {showAllFields ? <TableCellsDataAll transaction={transaction} /> : <TableCellsData transaction={transaction} />}
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-            <Link color="primary" href="#" sx={{ mt: 3 }}>
-                See more orders
-            </Link>
         </React.Fragment>
     );
 }

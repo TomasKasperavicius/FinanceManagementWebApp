@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import * as React from 'react';
 import { formatAmount } from '@/utils/formatters';
 import { Link } from 'react-router-dom';
 import ClipboardCopy from './ClipboardCopy';
@@ -6,17 +6,22 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Lines from '../assets/lines.png';
 import MasterCard from '../assets/mastercard.svg';
 import Paypass from '../assets/Paypass.svg';
+import SimChip from '../assets/SimChip.png';
+import { UserContext,CurrentActiveAccountContext } from '../Context/UserContext';
 
 
-const BankCard = ({ account, showBalance = true }) => {
-    if (!account.account) {
-        console.log(account)
+const BankCard = ({ bankInfos, account, showBalance = true }) => {
+    const { setActiveAccount } = React.useContext(CurrentActiveAccountContext);
+    const { user } = React.useContext(UserContext);
+    console.log(account)
+    if (!account.account && !user.LoggedIn) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <CircularProgress />
             </div>
         );
     }
+
     const cardStyle = {
         position: 'relative',
         display: 'flex',
@@ -48,7 +53,7 @@ const BankCard = ({ account, showBalance = true }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         borderTopRightRadius: '20px',
         borderBottomRightRadius: '20px',
         padding: '20px 20px',
@@ -71,27 +76,45 @@ const BankCard = ({ account, showBalance = true }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Link to="#" style={cardStyle}>
+            <Link to="/dashboard/transactions" onClick={() => setActiveAccount({...account})} style={cardStyle}>
                 <div style={contentStyle}>
                     <div>
                         <h1 style={{ ...textStyle, fontSize: '16px', fontWeight: '600' }}>
-                            {account?.account.name}
+                            {bankInfos.filter(bank => bank.institution_id === account.institutionID)[0]?.name || ""}
                         </h1>
-                        <p style={{ ...textStyle, fontFamily: 'IBM Plex Serif', fontWeight: '900' }}>
-                            {formatAmount(account?.account.balances.current, account?.account.iso_currency_code || "USD")}
-                        </p>
+                        <div style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
+                            <img
+                                src={SimChip}
+                                width={40}
+                                height={30}
+                                alt="sim card chip"
+                            />
+                            <img
+                                src={Paypass}
+                                width={34}
+                                height={26}
+                                alt="pay"
+                                style={{ paddingLeft: 10 }}
+                            />
+                            {!showBalance &&
+                                <div style={{ ...textStyle, fontFamily: 'IBM Plex Serif', fontWeight: '900', paddingLeft: 20 }}>
+                                    {formatAmount(account?.account.balances.current, account?.account.iso_currency_code || "USD")}
+                                </div>}
+                        </div>
                     </div>
 
                     <article style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <h1 style={{ ...textStyle, fontSize: '12px', fontWeight: '600' }}>
-                                {account?.account.name}
+                                {user.userName}
 
                             </h1>
+
                             <h2 style={{ ...textStyle, fontSize: '12px', fontWeight: '600' }}>
                                 ●● / ●●
                             </h2>
                         </div>
+
                         <p style={{ ...textStyle, fontSize: '14px', fontWeight: '600', letterSpacing: '1.1px' }}>
                             ●●●● ●●●● ●●●● <span style={{ fontSize: '16px' }}>{account?.account.mask}</span>
                         </p>
@@ -99,12 +122,7 @@ const BankCard = ({ account, showBalance = true }) => {
                 </div>
 
                 <div style={iconStyle}>
-                    <img
-                        src={Paypass}
-                        width={20}
-                        height={24}
-                        alt="pay"
-                    />
+
                     <img
                         src={MasterCard}
                         width={45}
@@ -123,11 +141,11 @@ const BankCard = ({ account, showBalance = true }) => {
                 />
             </Link>
 
-            {showBalance && <ClipboardCopy title={account?.account.account_id} />} 
+            {showBalance && <ClipboardCopy title={account?.account.account_id} />}
 
         </div>
     );
 };
-    
+
 
 export default BankCard;

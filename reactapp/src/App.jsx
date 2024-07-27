@@ -8,6 +8,11 @@ import { UserContext, CurrentActiveAccountContext } from './Context/UserContext'
 import { usePlaidLink } from 'react-plaid-link';
 import BankAccounts from './Components/BankAccounts';
 import SideBar from './Components/SideBar';
+import Transaction from './Components/Dashboard/Transaction';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import { getUniquePropertyValues } from "./utils/helper"
+
 
 const App = () => {
     const [linkToken, setLinkToken] = useState(null);
@@ -15,6 +20,9 @@ const App = () => {
     const [activeAccount, setActiveAccount] = useState({});
     const [allAccounts, setAllAccounts] = useState([]);
     const [openPlaidLink, setOpenPlaiLink] = useState(false);
+    const [transactions, setTransactions] = useState([]);
+    const [bankInfos, setBankInfos] = useState([]);
+
     useEffect(() => {
         if (!user.userID) return
         const fetchLinkToken = async () => {
@@ -108,6 +116,53 @@ const App = () => {
             open()
         }
     }, [openPlaidLink, linkToken, ready])
+    useEffect(() => {
+        const getTransactions = async () => {
+            if (!activeAccount.accessToken) return
+            const response = await fetch('https://localhost:7221/user/transactions/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ AccessToken: activeAccount.accessToken }),
+            });
+            const data = await response.json();
+            setTransactions([...data])
+        }
+        try {
+            getTransactions();
+        } catch (err) {
+            console.log(err)
+        }
+    }, [activeAccount])
+    useEffect(() => {
+        if (!allAccounts) return
+        const fetchBankInfos = async () => {
+            const institution_ids = getUniquePropertyValues(allAccounts, 'institutionID')
+            const access_tokens = getUniquePropertyValues(allAccounts, 'accessToken')
+            var arr = []
+            for (var i = 0; i < access_tokens.length; i++) {
+
+                const response = await fetch('https://localhost:7221/account/get_institution_by_id/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ AccessToken: access_tokens[i], InstitutionID: institution_ids[i] }),
+                });
+                if (response.ok) {
+                    const { institution } = await response.json();
+                   arr = [...arr, institution]
+                }
+            }
+            setBankInfos([...arr])
+        }
+        try {
+            fetchBankInfos()
+        } catch (err) {
+            console.log(err)
+        }
+    }, [allAccounts,activeAccount])
     return (
         <UserContext.Provider value={{ user, setUser }}>
             <CurrentActiveAccountContext.Provider value={{ activeAccount, setActiveAccount }}>
@@ -133,12 +188,27 @@ const App = () => {
                                 path="dashboard"
                                 element={<SideBar openPlaid={open} ready={ready} />}
                             >
-                                <Route path="accounts" element={<BankAccounts allAccounts={allAccounts} />} />
-                                <Route path="account" element={<AccountInfo />} />
+                                <Route path="accounts" element={<BankAccounts bankInfos={bankInfos} allAccounts={allAccounts} />} />
+                                <Route path="account" element={<AccountInfo bankInfos={bankInfos} transactions={transactions} />} />
+                                <Route path="transactions" element={
+                                    <>
+                                                <Grid item xs={12} md={12} lg={12}>
+                                                    <Paper
+                                                        sx={{
+                                                            p: 2,
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            height: "100%",
+                                                        }}
+                                                    >
+                                                        <Transaction transactions={transactions} showAllFields={true} />
+                                                    </Paper>
+                                                </Grid>
+                                             </>
+                                        } />
 
+                                    </Route><Route path="*" element={<div>Not Found</div>} />
                             </Route>
-                            <Route path="*" element={<div>Not Found</div>} />
-                        </Route>
                     </Routes>
 
                 </Router>

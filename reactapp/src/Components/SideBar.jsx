@@ -22,6 +22,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 const drawerWidth = 240;
 
@@ -87,7 +89,7 @@ export default function SideBar({ openPlaid, ready }) {
     };
     const navigate = useNavigate();
     return (
-        <Box sx={{ display: 'flex', width:"100%" }}>
+        <Box sx={{ display: 'flex', width: "100%" }}>
 
             <CssBaseline />
             <AppBar position="absolute" open={open}>
@@ -139,13 +141,13 @@ export default function SideBar({ openPlaid, ready }) {
                 </Toolbar>
                 <Divider />
                 <List component="nav">
-                    <ListItemButton onClick={() => navigate("/dashboard/accounts") }>
+                    <ListItemButton onClick={() => navigate("/dashboard/accounts")}>
                         <ListItemIcon>
                             <PaymentIcon />
                         </ListItemIcon>
                         <ListItemText primary="Bank accounts" />
                     </ListItemButton>
-                    <ListItemButton>
+                    <ListItemButton onClick={() => navigate("/dashboard/transactions")} >
                         <ListItemIcon>
                             <HistoryIcon />
                         </ListItemIcon>
@@ -165,8 +167,27 @@ export default function SideBar({ openPlaid, ready }) {
                     </ListItemButton>
                 </List>
             </Drawer>
-            <Outlet />
+            <Box
+                component="main"
+                sx={{
+                    backgroundColor: (theme) => theme.palette.mode === 'light'
+                        ? theme.palette.grey[100]
+                        : theme.palette.grey[900],
+                    flexGrow: 1,
+                    height: '100vh',
+                    overflow: 'auto',
+                    width: "100%"
+                }}
+            >
+                <Toolbar />
 
+                <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                    <Grid container spacing={3}>
+                        {/* Nested route content goes here*/}
+                        <Outlet />
+                    </Grid>
+                </Container>
+            </Box>
             {/*<Copyright/>*/}
         </Box>)
 }
