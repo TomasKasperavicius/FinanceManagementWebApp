@@ -13,7 +13,6 @@ import { UserContext,CurrentActiveAccountContext } from '../Context/UserContext'
 const BankCard = ({ bankInfos, account, showBalance = true }) => {
     const { setActiveAccount } = React.useContext(CurrentActiveAccountContext);
     const { user } = React.useContext(UserContext);
-    console.log(account)
     if (!account.account && !user.LoggedIn) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

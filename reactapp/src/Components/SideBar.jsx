@@ -153,11 +153,11 @@ export default function SideBar({ openPlaid, ready }) {
                         </ListItemIcon>
                         <ListItemText primary="Transactions" />
                     </ListItemButton>
-                    <ListItemButton>
+                    <ListItemButton onClick={() => navigate("/dashboard/transfer")}>
                         <ListItemIcon>
                             <CurrencyExchangeIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Transfers" />
+                        <ListItemText primary="Transfer" />
                     </ListItemButton>
                     <ListItemButton disabled={!ready} >
                         <ListItemIcon>

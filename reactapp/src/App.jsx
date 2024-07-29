@@ -12,6 +12,7 @@ import Transaction from './Components/Dashboard/Transaction';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { getUniquePropertyValues } from "./utils/helper"
+import Transfer from './Components/Transfer';
 
 
 const App = () => {
@@ -190,6 +191,7 @@ const App = () => {
                             >
                                 <Route path="accounts" element={<BankAccounts bankInfos={bankInfos} allAccounts={allAccounts} />} />
                                 <Route path="account" element={<AccountInfo bankInfos={bankInfos} transactions={transactions} />} />
+                                <Route path="transfer" element={<Transfer />} />
                                 <Route path="transactions" element={
                                     <>
                                                 <Grid item xs={12} md={12} lg={12}>
