@@ -10,7 +10,7 @@ namespace webapi.Controllers
         private readonly FinanceDbContext _context;
         private readonly PlaidClient _plaidClient;
 
-        public UserController(FinanceDbContext financeDbContext, PlaidClient plaidClient, ILogger<UserController> logger)
+        public UserController(FinanceDbContext financeDbContext, PlaidClient plaidClient)
         {
             _context = financeDbContext;
             _plaidClient = plaidClient;
@@ -70,6 +70,22 @@ namespace webapi.Controllers
                     AccessToken = request.AccessToken
                 });
                 return Ok(response.Accounts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
+        [HttpPost("funding_source_info")]
+        public async Task<IActionResult> GetFundingSourceInfo([FromBody] AccessTokenRequest request)
+        {
+            try
+            {
+                var response = await _plaidClient.AuthGetAsync(new()
+                {
+                    AccessToken = request.AccessToken,
+                });
+                return Ok(response.Numbers);
             }
             catch (Exception ex)
             {

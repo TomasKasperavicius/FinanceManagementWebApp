@@ -13,7 +13,9 @@ import {
     FormHelperText,
     Paper
 } from '@mui/material';
-const Transfer = () => {
+import CircularProgress from '@mui/material/CircularProgress';
+
+const Transfer = ({ allAccounts, bankInfos }) => {
     const [accountTo, setAccountTo] = useState('');
     const [accountFrom, setAccountFrom] = useState('');
     const [amount, setAmount] = useState('');
@@ -26,8 +28,19 @@ const Transfer = () => {
             amount,
         });
     };
+
+
+    if (!allAccounts) {
+
+
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: "100%" }}>
+                <CircularProgress />
+            </div>
+        );
+    }
     return (
-        <Container component="main" maxWidth="xs" >
+        <Container component="main" maxWidth="lg" >
             <Paper elevation={3} style={{ padding: 20 }}>
                 <Typography variant="h5" sx={{padding:4} }>Transfer funds</Typography>
                 <form onSubmit={handleSubmit}>
@@ -37,35 +50,45 @@ const Transfer = () => {
                                 <InputLabel>Select account</InputLabel>
                                 <Select
                                     value={accountFrom}
+                                    label="Select account"
                                     onChange={(e) => setAccountFrom(e.target.value)}
                                 >
-                                    <MenuItem value="checking">Checking</MenuItem>
-                                    <MenuItem value="savings">Savings</MenuItem>
+                                    {allAccounts.map((account, id) => {
+                                        return (<MenuItem key={id} value={account}>{bankInfos.filter(bank => bank.institution_id === account.institutionID)[0]?.name}: {account.account.name}</MenuItem>)
+                                    }) }
                                 </Select>
                                 <FormHelperText>Choose bank account to transfer funds from</FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth required>
-                                <InputLabel>Receiver's plaid account ID</InputLabel>
-                                <Select
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                >
-                                    <MenuItem value="credit">Credit</MenuItem>
-                                    <MenuItem value="debit">Debit</MenuItem>
-                                </Select>
-                                <FormHelperText>Set amount</FormHelperText>
+                                <TextField
+                                    value={accountTo}
+                                    onChange={(e) => setAccountTo(e.target.value)}
+                                    id="outlined-number"
+                                    label="Receiver's account"
+                                    type="number"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                                <FormHelperText>Input receiver's account ID</FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
+                            <FormControl fullWidth required>
                             <TextField
-                                fullWidth
-                                label="Account To"
-                                value={accountTo}
-                                onChange={(e) => setAccountTo(e.target.value)}
-                                required
-                            />
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                id="outlined-number"
+                                label="Amount"
+                                type="number"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                />
+                                <FormHelperText>Set amount to transfer</FormHelperText>
+                            </FormControl>
                         </Grid>
                         
                         <Grid item xs={12}>

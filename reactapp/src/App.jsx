@@ -90,7 +90,7 @@ const App = () => {
             if (response.ok) {
                 var data = await response.json();
                 setActiveAccount({ ...data[0], accessToken: access_token, institutionID: metadata.institution.institution_id });
-                setAllAccounts({ ...data })
+                setAllAccounts([ ...data ])
             }
             // Create account info to be saved to DB
             var accounts = data.map(() => {
@@ -137,7 +137,7 @@ const App = () => {
         }
     }, [activeAccount])
     useEffect(() => {
-        if (!allAccounts) return
+        if (!allAccounts || allAccounts.length > 0) return
         const fetchBankInfos = async () => {
             const institution_ids = getUniquePropertyValues(allAccounts, 'institutionID')
             const access_tokens = getUniquePropertyValues(allAccounts, 'accessToken')
@@ -163,7 +163,7 @@ const App = () => {
         } catch (err) {
             console.log(err)
         }
-    }, [allAccounts,activeAccount])
+    }, [allAccounts, activeAccount])
     return (
         <UserContext.Provider value={{ user, setUser }}>
             <CurrentActiveAccountContext.Provider value={{ activeAccount, setActiveAccount }}>
@@ -191,7 +191,7 @@ const App = () => {
                             >
                                 <Route path="accounts" element={<BankAccounts bankInfos={bankInfos} allAccounts={allAccounts} />} />
                                 <Route path="account" element={<AccountInfo bankInfos={bankInfos} transactions={transactions} />} />
-                                <Route path="transfer" element={<Transfer />} />
+                                <Route path="transfer" element={<Transfer bankInfos={bankInfos} allAccounts={allAccounts}/>} />
                                 <Route path="transactions" element={
                                     <>
                                                 <Grid item xs={12} md={12} lg={12}>

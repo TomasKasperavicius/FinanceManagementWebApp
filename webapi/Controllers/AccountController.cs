@@ -1,7 +1,9 @@
 ﻿using Going.Plaid;
+using Going.Plaid.Processor;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapi.Models;
+using webapi.Services;
 
 namespace webapi.Controllers
 {
@@ -11,11 +13,12 @@ namespace webapi.Controllers
     {
         private readonly FinanceDbContext _context;
         private readonly PlaidClient _plaidClient;
-
-        public AccountController(FinanceDbContext context, PlaidClient plaidClient)
+        private readonly DwollaService _dwollaService;
+        public AccountController(FinanceDbContext context, PlaidClient plaidClient, DwollaService dwollaService)
         {
             _context = context;
             _plaidClient = plaidClient;
+            _dwollaService = dwollaService;
         }
 
         [HttpPost("addAccounts")]
@@ -89,10 +92,54 @@ namespace webapi.Controllers
                 return StatusCode((int)response.StatusCode, response.Error);
             }
         }
+        [HttpPost("create_dwolla_processor_token")]
+        public async Task<IActionResult> CreateProcessorToken([FromBody] ProcessorTokenRequest request)
+        {
+            var processorRequest = new ProcessorTokenCreateRequest
+            {
+                AccessToken = request.AccessToken,
+                AccountId = request.AccountID,
+                Processor = Going.Plaid.Entity.ProcessorTokenCreateRequestProcessorEnum.Dwolla
+            };
+            var processorResponse = await _plaidClient.ProcessorTokenCreateAsync(processorRequest);
+            await Console.Out.WriteLineAsync(processorResponse.ToString());
+            if (processorResponse.Error != null)
+            {
+                return BadRequest(processorResponse.Error);
+            }
+
+            return Ok(new { processor_token = processorResponse.ProcessorToken });
+        }
+        [HttpPost("create_dwolla_customer")]
+        public async Task<IActionResult> CreateDwollaCustomer([FromBody] Models.CreateCustomerRequest request)
+        {
+           
+            var uri = await _dwollaService.CreateCustomerAsync(request);
+            return Ok(new { link = uri });
+        }
+        [HttpPost("create_funding_source")]
+        public async Task<IActionResult> CreateFundingSource([FromBody] Models.CreateFundingSourceRequest request)
+        {
+
+            var uri = await _dwollaService.CreateFundingSourceAsync(request);
+            return Ok(new { link = uri });
+        }
+        [HttpPost("create_transfer")]
+        public async Task<IActionResult> CreateTransfer([FromBody] Models.CreateTransferRequest request)
+        {
+
+            var uri = await _dwollaService.CreateTransferAsync(request);
+            return Ok(new { link = uri });
+        }
+    }
+    public class ProcessorTokenRequest
+    {
+        public string AccessToken { get; set; }
+        public string AccountID { get; set; }
     }
     public class InstitutionRequest { 
         public string AccessToken { get; set; }
         public string InstitutionID { get; set; }
     }
-
+   
 }
