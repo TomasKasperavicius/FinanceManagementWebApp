@@ -45,7 +45,7 @@ namespace webapi.Controllers
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == register.Email || u.UserName == register.UserName);
                 if (user != null)
                 {
-                    BadRequest("User with this email or username already exists.");
+                    return BadRequest("User with this email or username already exists.");
                 }
                 var newUser = new User
                 {

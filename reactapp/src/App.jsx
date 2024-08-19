@@ -164,6 +164,7 @@ const App = () => {
             console.log(err)
         }
     }, [allAccounts, activeAccount])
+    console.log(activeAccount)
     return (
         <UserContext.Provider value={{ user, setUser }}>
             <CurrentActiveAccountContext.Provider value={{ activeAccount, setActiveAccount }}>
