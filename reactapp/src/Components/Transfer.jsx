@@ -23,12 +23,11 @@ const Transfer = ({ allAccounts, bankInfos }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log({
-            accountTo,
-            accountFrom,
+            accountTo:atob(accountTo),
+            accountFrom:accountFrom,
             amount,
         });
     };
-
 
     if (!allAccounts) {
 
@@ -54,7 +53,7 @@ const Transfer = ({ allAccounts, bankInfos }) => {
                                     onChange={(e) => setAccountFrom(e.target.value)}
                                 >
                                     {allAccounts.map((account, id) => {
-                                        return (<MenuItem key={id} value={account}>{bankInfos.filter(bank => bank.institution_id === account.institutionID)[0]?.name}: {account.account.name}</MenuItem>)
+                                        return (<MenuItem key={id} value={account.account_id}>{bankInfos.filter(bank => bank.institution_id === account.institutionID)[0]?.name}: {account.name}</MenuItem>)
                                     }) }
                                 </Select>
                                 <FormHelperText>Choose bank account to transfer funds from</FormHelperText>
@@ -67,7 +66,7 @@ const Transfer = ({ allAccounts, bankInfos }) => {
                                     onChange={(e) => setAccountTo(e.target.value)}
                                     id="outlined-number"
                                     label="Receiver's account"
-                                    type="number"
+                                    type="text"
                                     InputLabelProps={{
                                         shrink: true,
                                     }}

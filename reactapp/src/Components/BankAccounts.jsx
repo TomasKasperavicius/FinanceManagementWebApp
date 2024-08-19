@@ -1,11 +1,17 @@
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import BankCard from './BankCard';
+import ClipboardCopy from "./ClipboardCopy"
 import * as React from "react";
+import { Navigate } from "react-router-dom";
+import { UserContext } from '../Context/UserContext';
+import { useContext } from "react";
 
 export default function BankAccounts({ bankInfos, allAccounts }) {
-   
-
+    const { user } = useContext(UserContext);
+    if (!user.LoggedIn) {
+        return <Navigate to="/login" replace />;
+    }
     return (
         <>
             {allAccounts &&
@@ -21,6 +27,7 @@ export default function BankAccounts({ bankInfos, allAccounts }) {
                             }}
                         >
                             <BankCard bankInfos={bankInfos} account={account} showBalance={false} />
+                            <ClipboardCopy title={account.account_id} />
                         </Paper>
                     </Grid>
                     </React.Fragment>)

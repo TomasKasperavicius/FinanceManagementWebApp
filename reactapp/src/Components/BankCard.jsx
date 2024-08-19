@@ -13,7 +13,7 @@ import { UserContext,CurrentActiveAccountContext } from '../Context/UserContext'
 const BankCard = ({ bankInfos, account, showBalance = true }) => {
     const { setActiveAccount } = React.useContext(CurrentActiveAccountContext);
     const { user } = React.useContext(UserContext);
-    if (!account.account && !user.LoggedIn) {
+    if (!account.account_id && !user.LoggedIn) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <CircularProgress />
@@ -97,7 +97,7 @@ const BankCard = ({ bankInfos, account, showBalance = true }) => {
                             />
                             {!showBalance &&
                                 <div style={{ ...textStyle, fontFamily: 'IBM Plex Serif', fontWeight: '900', paddingLeft: 20 }}>
-                                    {formatAmount(account?.account.balances.current, account?.account.iso_currency_code || "USD")}
+                                    {formatAmount(account?.balances.current, account?.iso_currency_code || "USD")}
                                 </div>}
                         </div>
                     </div>
@@ -115,7 +115,7 @@ const BankCard = ({ bankInfos, account, showBalance = true }) => {
                         </div>
 
                         <p style={{ ...textStyle, fontSize: '14px', fontWeight: '600', letterSpacing: '1.1px' }}>
-                            ●●●● ●●●● ●●●● <span style={{ fontSize: '16px' }}>{account?.account.mask}</span>
+                            ●●●● ●●●● ●●●● <span style={{ fontSize: '16px' }}>{account?.mask}</span>
                         </p>
                     </article>
                 </div>
@@ -140,7 +140,7 @@ const BankCard = ({ bankInfos, account, showBalance = true }) => {
                 />
             </Link>
 
-            {showBalance && <ClipboardCopy title={account?.account.account_id} />}
+            {showBalance && <ClipboardCopy title={account?.account_id} />}
 
         </div>
     );

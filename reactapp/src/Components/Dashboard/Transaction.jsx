@@ -11,6 +11,8 @@ import { useEffect } from 'react';
 import { CurrentActiveAccountContext } from "../../Context/UserContext"
 import { formatAmount } from '../../utils/formatters';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Navigate } from "react-router-dom";
+import { UserContext } from '../../Context/UserContext';
 
 const payment_channels = {
     0: "Online",
@@ -20,14 +22,17 @@ const payment_channels = {
 export default function Transaction({ transactions, showAllFields = false }) {
     const [visibleTransactions, setVisibleTransactions] = React.useState([])
     const { activeAccount } = React.useContext(CurrentActiveAccountContext);
-
+    const { user } = React.useContext(UserContext);
     useEffect(() => {
-        if (!activeAccount.account) return
-        var filteredTransactions = transactions.filter(transaction => transaction.account_id === activeAccount.account.account_id);
+        if (!activeAccount.account_id) return
+        var filteredTransactions = transactions.filter(transaction => transaction.account_id === activeAccount.account_id);
         var sortedTransactions = filteredTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         setVisibleTransactions([...sortedTransactions])
     }, [transactions, activeAccount])
-    if (!activeAccount.account) {
+    if (!user.LoggedIn) {
+        return <Navigate to="/login" replace />;
+    }
+    if (!activeAccount.account_id) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: "100%" }}>
                 <CircularProgress />

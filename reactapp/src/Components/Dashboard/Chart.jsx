@@ -35,7 +35,7 @@ export default function Chart({ transactions }) {
     useEffect(() => {
         setTotalExpenditure(total);
     }, [total]);
-    if (!activeAccount.account) {
+    if (!activeAccount.account_id) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: "100%" }}>
                 <CircularProgress />

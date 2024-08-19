@@ -49,12 +49,17 @@ const App = () => {
             });
             if (response.ok) {
                 const data = await response.json();
+                console.log(data)
                 if (data.length == 0) {
                     setOpenPlaiLink(true)
                 }
                 else {
-                    setAllAccounts([...data])
-                    setActiveAccount({ ...data[0] })
+                    // Parsing format: spreading nested account object 1 level up
+                    const allAccountsTemp = data.map((account) => {
+                        return {...account.account,...account}
+                    })
+                    setAllAccounts([...allAccountsTemp])
+                    setActiveAccount({ ...data[0].account, ...data[0] })
                 }
             }
         };
@@ -137,7 +142,7 @@ const App = () => {
         }
     }, [activeAccount])
     useEffect(() => {
-        if (!allAccounts || allAccounts.length > 0) return
+        if (!allAccounts || allAccounts.length < 0) return
         const fetchBankInfos = async () => {
             const institution_ids = getUniquePropertyValues(allAccounts, 'institutionID')
             const access_tokens = getUniquePropertyValues(allAccounts, 'accessToken')

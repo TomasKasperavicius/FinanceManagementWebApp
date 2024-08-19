@@ -3,10 +3,14 @@ import Paper from '@mui/material/Paper';
 import Chart from './Dashboard/Chart';
 import Deposits from './Dashboard/Deposits';
 import Transaction from './Dashboard/Transaction';
-
-
+import { Navigate } from "react-router-dom";
+import { UserContext } from '../Context/UserContext';
+import { useContext } from "react";
 export default function AccountInfo({ bankInfos, transactions }) {
-
+    const { user } = useContext(UserContext);
+    if (!user.LoggedIn) {
+        return <Navigate to="/login" replace />;
+    }
     return (<>
 
         {/* Spending categories chart */}

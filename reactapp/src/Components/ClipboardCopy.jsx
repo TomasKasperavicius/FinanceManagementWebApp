@@ -6,7 +6,7 @@ const Copy = ({ title }) => {
     const [hasCopied, setHasCopied] = useState(false);
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(title);
+        navigator.clipboard.writeText(btoa(title));
         setHasCopied(true);
 
         setTimeout(() => {
@@ -37,7 +37,7 @@ const Copy = ({ title }) => {
                 fontWeight: 500,
                 color: '#262626',
             }}>
-                {title} test
+                {btoa(title)}
             </p>
 
             {!hasCopied ? (
