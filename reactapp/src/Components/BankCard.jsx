@@ -30,7 +30,7 @@ const BankCard = ({ bankInfos, account, showBalance = true }) => {
         justifyContent: 'space-between',
         borderRadius: '20px',
         border: '1px solid white',
-        background: "linear-gradient(90deg, #0179FE 0%, #4893FF 100%)", // Card background color
+        background: "linear-gradient(90deg, #310a00 0%, #832254 100%)", // Card background color
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
         backdropFilter: 'blur(6px)',
     };
@@ -43,7 +43,7 @@ const BankCard = ({ bankInfos, account, showBalance = true }) => {
         justifyContent: 'space-between',
         borderTopLeftRadius: '20px',
         borderBottomLeftRadius: '20px',
-        background: "#0179FE", // Card content background color
+        background: "#832254",// Card content background color
         padding: '20px 20px 16px 20px',
         maxWidth: '228px',
     };
@@ -75,7 +75,7 @@ const BankCard = ({ bankInfos, account, showBalance = true }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Link to="/dashboard/transactions" onClick={() => setActiveAccount({...account})} style={cardStyle}>
+            <Link to="/dashboard/account" onClick={() => setActiveAccount({...account})} style={cardStyle}>
                 <div style={contentStyle}>
                     <div>
                         <h1 style={{ ...textStyle, fontSize: '16px', fontWeight: '600' }}>
@@ -127,7 +127,7 @@ const BankCard = ({ bankInfos, account, showBalance = true }) => {
                         width={45}
                         height={32}
                         alt="mastercard"
-                        style={{ marginLeft: '5px' }}
+                        style={{ marginLeft: '5px'}}
                     />
                 </div>
 

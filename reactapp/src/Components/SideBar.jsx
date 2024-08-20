@@ -24,6 +24,9 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+import Logout from '../assets/logout.svg';
+import { useContext } from "react";
+import { UserContext } from '../Context/UserContext';
 
 const drawerWidth = 240;
 
@@ -88,6 +91,11 @@ export default function SideBar({ openPlaid, ready }) {
         setOpen(!open);
     };
     const navigate = useNavigate();
+    const { user,setUser } = useContext(UserContext);
+
+    const handleLogout = () => {
+        setUser({ ...user, LoggedIn: false})
+    }
     return (
         <Box sx={{ display: 'flex', width: "100%" }}>
 
@@ -119,14 +127,10 @@ export default function SideBar({ openPlaid, ready }) {
                     >
                         Dashboard
                     </Typography>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
+                   
                 </Toolbar>
             </AppBar>
-            <Drawer variant="permanent" open={open}>
+            <Drawer variant="permanent" open={open} sx={{height:"100vh"} }>
                 <Toolbar
                     sx={{
                         display: 'flex',
@@ -159,11 +163,25 @@ export default function SideBar({ openPlaid, ready }) {
                         </ListItemIcon>
                         <ListItemText primary="Transfer" />
                     </ListItemButton>
-                    <ListItemButton disabled={!ready} >
-                        <ListItemIcon>
+                    <ListItemButton disabled={!ready} onClick={() => openPlaid()}>
+                        <ListItemIcon >
                             <AddCardIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Connect bank account" onClick={() => openPlaid()} />
+                        <ListItemText primary="Connect bank account"  />
+                        </ListItemButton>
+                   
+                </List>
+                <List component="nav" sx={{ display: "flex", alignItems: "end", flexGrow: 1 }}>
+                    <ListItemButton onClick={handleLogout}>
+                        <ListItemIcon >
+                        <img
+                            src={Logout}
+                            width={30}
+                            height={25}
+                            alt="logout"
+                        />
+                    </ListItemIcon>
+                        <ListItemText primary="Logout" />
                     </ListItemButton>
                 </List>
             </Drawer>
@@ -183,11 +201,10 @@ export default function SideBar({ openPlaid, ready }) {
 
                 <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                     <Grid container spacing={3}>
-                        {/* Nested route content goes here*/}
                         <Outlet />
                     </Grid>
                 </Container>
             </Box>
-            {/*<Copyright/>*/}
+            
         </Box>)
 }

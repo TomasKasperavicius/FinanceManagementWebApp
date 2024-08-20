@@ -39,10 +39,10 @@ const Transfer = ({ allAccounts, bankInfos }) => {
         );
     }
     return (
-        <Container component="main" maxWidth="lg" >
+        <Container component="main" maxWidth="lg">
             <Paper elevation={3} style={{ padding: 20 }}>
                 <Typography variant="h5" sx={{padding:4} }>Transfer funds</Typography>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} >
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <FormControl fullWidth required>

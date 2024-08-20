@@ -9,7 +9,7 @@ import { useContext } from "react";
 export default function AccountInfo({ bankInfos, transactions }) {
     const { user } = useContext(UserContext);
     if (!user.LoggedIn) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/" replace />;
     }
     return (<>
 

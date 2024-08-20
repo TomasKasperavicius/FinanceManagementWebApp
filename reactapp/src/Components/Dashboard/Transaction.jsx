@@ -30,7 +30,7 @@ export default function Transaction({ transactions, showAllFields = false }) {
         setVisibleTransactions([...sortedTransactions])
     }, [transactions, activeAccount])
     if (!user.LoggedIn) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/" replace />;
     }
     if (!activeAccount.account_id) {
         return (

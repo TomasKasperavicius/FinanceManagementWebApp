@@ -14,3 +14,5 @@ Finance Management Web App is a comprehensive tool designed to help users manage
 - **Backend:** .NET Core Web API
 - **Database:** MySQL
 - **API Integration:** Plaid API
+## UI preview
+![image](https://github.com/user-attachments/assets/f922db73-b311-41dd-9dfd-95194b25faee)

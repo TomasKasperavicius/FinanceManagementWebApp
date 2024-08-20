@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Components/Login"
 import Register from "./Components/Register"
-import Home from './Components/Home';
 import AccountInfo from './Components/AccountInfo';
 import { UserContext, CurrentActiveAccountContext } from './Context/UserContext';
 import { usePlaidLink } from 'react-plaid-link';
@@ -49,7 +48,6 @@ const App = () => {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data)
                 if (data.length == 0) {
                     setOpenPlaiLink(true)
                 }
@@ -169,7 +167,6 @@ const App = () => {
             console.log(err)
         }
     }, [allAccounts, activeAccount])
-    console.log(activeAccount)
     return (
         <UserContext.Provider value={{ user, setUser }}>
             <CurrentActiveAccountContext.Provider value={{ activeAccount, setActiveAccount }}>
@@ -178,12 +175,6 @@ const App = () => {
                         <Route path="/">
                             <Route
                                 index
-                                element={
-                                    <Home />
-                                }
-                            />
-                            <Route
-                                path="login"
                                 element={<Login />}
                             />
                             <Route
