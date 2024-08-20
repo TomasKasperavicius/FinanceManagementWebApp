@@ -8,6 +8,8 @@ namespace webapi
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+
 
         public FinanceDbContext(DbContextOptions<FinanceDbContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,6 +22,14 @@ namespace webapi
                .HasOne<User>()
                .WithMany()
                .HasForeignKey(u => u.UserID);
+            modelBuilder.Entity<Transaction>()
+                .HasOne<Account>()
+                .WithMany()
+                .HasForeignKey(t => t.SenderBankID);
+            modelBuilder.Entity<Transaction>()
+                .HasOne<Account>()
+                .WithMany()
+                .HasForeignKey(t => t.ReceiverBankID);
             base.OnModelCreating(modelBuilder);
         }
 
